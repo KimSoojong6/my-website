@@ -1,71 +1,115 @@
-// App.js
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 
-function Card({ content }) {
-  return (
-    <motion.div
-      className="card"
-      style={{
-        width: '300px',
-        height: '400px',
-        backgroundColor: '#fff',
-        boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-        borderRadius: '8px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        userSelect: 'none',
-      }}
-      whileHover={{ scale: 1.05 }}
-      transition={{ duration: 0.2 }}
-    >
-      {content}
-    </motion.div>
-  );
-}
+const cardsData = [
+  { id: 0, title: 'Project 0', link: 'https://example.com/0' },
+  { id: 1, title: 'Project 1', link: 'https://example.com/1' },
+  { id: 2, title: 'Project 2', link: 'https://example.com/2' },
+  { id: 3, title: 'Project 3', link: 'https://example.com/3' },
+  { id: 4, title: 'Project 4', link: 'https://example.com/4' },
+  { id: 5, title: 'Project 5', link: 'https://example.com/5' },
+];
 
 function App() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  const cards = [
-    { id: 1, content: 'Card 1' },
-    { id: 2, content: 'Card 2' },
-    { id: 3, content: 'Card 3' },
-  ];
-
-  const nextCard = () => {
-    setActiveIndex((prev) => (prev + 1) % cards.length);
+  const getVisibleCards = () => {
+    return [-1, 0, 1].map((offset) => {
+      const index = (activeIndex + offset + cardsData.length) % cardsData.length;
+      return { ...cardsData[index], position: offset };
+    });
   };
-  const prevCard = () => {
-    setActiveIndex((prev) => (prev - 1 + cards.length) % cards.length);
+
+  const handleCardClick = (card) => {
+    if (card.position === 0) {
+      window.open(card.link, '_blank');
+    }
+  };
+
+  const handleNext = () => {
+    if (!isAnimating) {
+      setDirection(1);
+      setActiveIndex((prev) => (prev + 1) % cardsData.length);
+      setIsAnimating(true);
+    }
+  };
+
+  const handlePrev = () => {
+    if (!isAnimating) {
+      setDirection(-1);
+      setActiveIndex((prev) => (prev - 1 + cardsData.length) % cardsData.length);
+      setIsAnimating(true);
+    }
+  };
+
+  const getCardPosition = (position) => {
+    if (position === -1 && direction === -1) return -800;
+    if (position === 1 && direction === 1) return 800;
+    return position * 500;
   };
 
   return (
-    <div className="App" style={{ backgroundColor: '#fff', height: '100vh' }}>
-      <motion.div
-        className="cards-wrapper"
-        style={{
-          display: 'flex',
-          gap: '20px',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100%',
-        }}
-        animate={{ x: -activeIndex * 320 }} // 카드 하나의 너비 + gap(대략)
-        transition={{ ease: 'easeInOut', duration: 0.5 }}
-      >
-        {cards.map((card) => (
-          <Card key={card.id} content={card.content} />
-        ))}
-      </motion.div>
-
-      {/* 좌우 이동 버튼 (필요하다면 최소화하거나 hover 시만 노출 가능) */}
-      <div style={{ position: 'absolute', bottom: 50, width: '100%' }}>
-        <button onClick={prevCard} style={{ marginRight: '20px' }}>Left</button>
-        <button onClick={nextCard}>Right</button>
+    <div className="app-container">
+      {/* 메뉴바 */}
+      <div className="menu-bar">
+        <a
+          href="https://example.com/about"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="menu-link"
+        >
+          About Me
+        </a>
       </div>
+
+      {/* 이전 버튼 */}
+      <button className="nav-button prev-button" onClick={handlePrev}>
+        {'<'}
+      </button>
+
+      {/* 카드 컨테이너 */}
+      <div className="card-container">
+        <AnimatePresence
+          initial={false}
+          custom={direction}
+          onExitComplete={() => setIsAnimating(false)}
+        >
+          {getVisibleCards().map((card) => (
+            <motion.div
+              key={card.id}
+              onClick={() => handleCardClick(card)}
+              initial={{
+                x: getCardPosition(card.position),
+                opacity: 0,
+              }}
+              animate={{
+                x: card.position * 500,
+                opacity: 1,
+                scale: card.position === 0 ? 1 : 0.9,
+                zIndex: card.position === 0 ? 10 : card.position === 1 ? 5 : 1,
+                filter: card.position === 0 ? 'none' : 'blur(4px)',
+              }}
+              whileHover={card.position === 0 ? { scale: 1.1 } : {}}
+              exit={{
+                x: direction === 1 ? -800 : 800,
+                opacity: 0,
+              }}
+              transition={{ type: 'spring', stiffness: 150, damping: 25 }}
+              className="card"
+            >
+              {card.title}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* 다음 버튼 */}
+      <button className="nav-button next-button" onClick={handleNext}>
+        {'>'}
+      </button>
     </div>
   );
 }
