@@ -53,7 +53,7 @@ function App() {
 
   return (
     <div className="app-container">
-      {/* 메뉴바 */}
+      {/* Menu Bar */}
       <div className="menu-bar">
         <a
           href="https://example.com/about"
@@ -65,12 +65,16 @@ function App() {
         </a>
       </div>
 
-      {/* 이전 버튼 */}
+      {/* Previous button "<" */}
       <button className="nav-button prev-button" onClick={handlePrev}>
         {'<'}
       </button>
+      {/* Next Button ">" */}
+      <button className="nav-button next-button" onClick={handleNext}>
+        {'>'}
+      </button>
 
-      {/* 카드 컨테이너 */}
+      {/* Card Container */}
       <div className="card-container">
         <AnimatePresence
           initial={false}
@@ -106,10 +110,7 @@ function App() {
         </AnimatePresence>
       </div>
 
-      {/* 다음 버튼 */}
-      <button className="nav-button next-button" onClick={handleNext}>
-        {'>'}
-      </button>
+      
     </div>
   );
 }
