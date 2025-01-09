@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 
@@ -15,6 +15,13 @@ function App() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 500); // Delay for fade-in animation
+  }, []);
 
   const getVisibleCards = () => {
     return [-1, 0, 1].map((offset) => {
@@ -52,7 +59,12 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <motion.div
+      className="app-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isLoaded ? 1 : 0 }}
+      transition={{ duration: 1 }}
+    >
       {/* Menu Bar */}
       <div className="menu-bar">
         <a
@@ -109,9 +121,7 @@ function App() {
           ))}
         </AnimatePresence>
       </div>
-
-      
-    </div>
+    </motion.div>
   );
 }
 
