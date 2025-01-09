@@ -56,7 +56,7 @@ function App() {
       {/* Menu Bar */}
       <div className="menu-bar">
         <a
-          href="https://example.com/about"
+          href="https://www.linkedin.com/in/soojongkim6/"
           target="_blank"
           rel="noopener noreferrer"
           className="menu-link"
