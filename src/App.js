@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 
 const cardsData = [
-  { id: 0, title: 'Project 0', link: 'https://example.com/0' },
-  { id: 1, title: 'Project 1', link: 'https://example.com/1' },
+  { id: 0, title: 'Pet Store Locator Calgary', link: 'https://example.com/0' },
+  { id: 1, title: 'Capstone Project W2025', link: 'https://example.com/1' },
   { id: 2, title: 'Project 2', link: 'https://example.com/2' },
   { id: 3, title: 'Project 3', link: 'https://example.com/3' },
   { id: 4, title: 'Project 4', link: 'https://example.com/4' },
